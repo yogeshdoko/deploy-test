@@ -1,0 +1,36 @@
+name: Deploy in Github Pages
+on: [push]
+jobs:
+  install-and-build:
+    name: Install and Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install and Build
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - run: | 
+          npm install
+          npm run build
+      - name: Store Build
+      - uses: actions/upload-artifact@v3
+        with:
+          name: dist-directory
+          path: dist
+  deploy-in-github-pages:
+    name: Deploy in Github Pages
+    needs: install-and-build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write      
+      id-token: write 
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+      - uses: actions/upload-artifact@v3
+        with:
+          name: dist-directory
+      - uses: actions/deploy-pages@v2
