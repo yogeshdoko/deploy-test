@@ -15,11 +15,10 @@ jobs:
       - run: | 
           npm install
           npm run build
-      - name: Store Build
-        uses: actions/upload-artifact@v3
+      - name: Upload Build in Pages
+        uses: actions/upload-pages-artifact@v1
         with:
-          name: github-pages
-          path: ./dist
+          path: './dist'
   deploy-in-github-pages:
     name: Deploy in Github Pages
     needs: install-and-build
@@ -32,8 +31,6 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Download Artifact
-        uses: actions/download-artifact@v3
       - name: Setup Pages
         uses: actions/configure-pages@v3
       - name: Deploy Pages
