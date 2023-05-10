@@ -5,16 +5,17 @@ jobs:
     name: Install and Build
     runs-on: ubuntu-latest
     steps:
-      - name: Install and Build
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - name: checkout repo
+        uses: actions/checkout@v3
+      - name: install deps and build
+        uses: actions/setup-node@v3
         with:
           node-version: '18'
       - run: | 
           npm install
           npm run build
-      - name: Store Build
-      - uses: actions/upload-artifact@v3
+      - name: upload build
+        uses: actions/upload-artifact@v3
         with:
           name: dist-directory
           path: dist
@@ -29,8 +30,10 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - name: download build
+        uses: actions/upload-artifact@v3
       - name: Deploy to GitHub Pages
-      - uses: actions/upload-artifact@v3
+        id: deployment
         with:
           name: dist-directory
-      - uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v2
