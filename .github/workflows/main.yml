@@ -1,44 +1,48 @@
-name: Deploy in Github Pages
-on: [push]
+# Simple workflow for deploying static content to GitHub Pages
+name: Deploy static content to Pages
+
+on:
+  # Runs on pushes targeting the default branch
+  push:
+    branches: ['main']
+
+# Sets the GITHUB_TOKEN permissions to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow one concurrent deployment
+concurrency:
+  group: 'pages'
+  cancel-in-progress: true
+
 jobs:
-  install-and-build:
-    name: Install and Build
-    runs-on: ubuntu-latest
-    steps:
-      - name: checkout repo
-        uses: actions/checkout@v3
-      - name: install deps and build
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-      - run: | 
-          npm install
-          npm run build
-      - name: upload build
-        uses: actions/upload-artifact@v3
-        with:
-          name: dist-directory
-          path: ./dist
-  deploy-in-github-pages:
-    name: Deploy in Github Pages
-    needs: install-and-build
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pages: write      
-      id-token: write 
+  # Single deploy job since we're just deploying
+  deploy:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: download build
-        uses: actions/download-artifact@v3
+      - name: Set up Node
+        uses: actions/setup-node@v3
         with:
-          name: dist-directory
+          node-version: 18
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm install
+      - name: Build
+        run: npm run build
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          # Upload dist repository
+          path: './dist'
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v2
-        with:
-          artifact_name: dist-directory
+        uses: actions/deploy-pages@v1
