@@ -18,7 +18,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: dist-directory
-          path: dist
+          path: ./dist
   deploy-in-github-pages:
     name: Deploy in Github Pages
     needs: install-and-build
@@ -36,6 +36,6 @@ jobs:
           name: dist-directory
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v1
         with:
           artifact_name: dist-directory
