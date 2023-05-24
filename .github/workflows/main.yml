@@ -20,11 +20,8 @@ jobs:
           npm install
           npm run build
       - name: Upload Build in Pages
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-pages-artifact@v1.0.8
         with:
-          name: artifact
           path: './dist'
       - name: Deploy Build In Github Pages
         uses: actions/deploy-pages@v2.0.1
-        with:
-          artifact_name: artifact
