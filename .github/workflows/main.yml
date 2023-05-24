@@ -1,5 +1,9 @@
 name: Deploy in Github Pages
 on: [push]
+permissions: 
+  id-token: write
+  contents: read
+  pages: write
 jobs:
   install-and-build:
     name: Install and Build
